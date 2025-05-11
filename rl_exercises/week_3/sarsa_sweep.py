@@ -4,9 +4,17 @@ This script uses Hydra to instantiate the environment, policy, and SARSA agent f
 then runs multiple episodes and returns the average total reward.
 """
 
+import sys
+
 import hydra
+import numpy as np
 from hydra.utils import instantiate
 from omegaconf import DictConfig
+
+# import os
+sys.path.append(
+    "/Users/tizianohumpert/Documents/Studium_local/Repo/RL_WEEK-3-RL_MA/rl_exercises"
+)
 
 
 def run_episodes(agent, env, num_episodes=5):
@@ -35,18 +43,23 @@ def run_episodes(agent, env, num_episodes=5):
     # Extend it to run multiple episodes and store the total discounted rewards in a list.
     # Finally, return the mean discounted reward across episodes.
 
-    total = 0.0
-    state, _ = env.reset()
-    done = False
-    action = agent.predict_action(state)
-    while not done:
-        next_state, reward, term, trunc, _ = env.step(action)
-        done = term or trunc
-        next_action = agent.predict_action(next_state)
-        agent.update_agent(state, action, reward, next_state, next_action, done)
-        total += reward
-        state, action = next_state, next_action
-    return total
+    rewards = []
+    for _ in range(num_episodes):
+        total = 0.0
+        discount = 1.0
+        state, _ = env.reset()
+        done = False
+        action = agent.predict_action(state)
+        while not done:
+            next_state, reward, term, trunc, _ = env.step(action)
+            done = term or trunc
+            next_action = agent.predict_action(next_state)
+            agent.update_agent(state, action, reward, next_state, next_action, done)
+            total += discount * reward
+            discount *= agent.gamma
+            state, action = next_state, next_action
+        rewards.append(total)
+    return np.mean(rewards)
 
 
 # Decorate the function with the path of the config file and the particular config to use
@@ -84,8 +97,10 @@ def main(cfg: DictConfig) -> dict:
 
     # 5) run & return reward
     total_reward = run_episodes(agent, env, cfg.num_episodes)
+    # print(f"Total reward: {total_reward}")
     return total_reward
 
 
 if __name__ == "__main__":
     main()
+### python rl_exercises/week_3/sarsa_sweep.py -m

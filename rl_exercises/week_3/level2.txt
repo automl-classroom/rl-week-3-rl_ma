@@ -1,0 +1,7 @@
+-The hyperparameters have a huge influence on the performance. The best example ist the hyperparameter epsilon. 
+ Running our agent in the same environment with different epsilon leads to extraordinary performance differences.
+ (plot)
+-The learning rate impacts how fast the information of the agent is updated by interacting with its environment.
+ In our case it had less influence then f. e. epsilon as long as we stayed in [0.2,0.6]. Leaving this intervall 
+ led to drops of performance. 
+-The best epsilon is highly dependent on the environment. In our example case the best value was ≈0.35.

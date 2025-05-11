@@ -1,4 +1,10 @@
+import os
+import sys
 import unittest
+
+sys.path.append(
+    os.getcwd()
+)  # "/Users/tizianohumpert/Documents/Studium_local/Repo/RL_WEEK-3")
 
 import numpy as np
 import pytest
